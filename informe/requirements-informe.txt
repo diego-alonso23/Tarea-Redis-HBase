@@ -1,3 +1,0 @@
-# Solo para regenerar informe/informe.pdf (no es necesario para correr el pipeline)
-xhtml2pdf>=0.2.16
-pypdf>=5.0
