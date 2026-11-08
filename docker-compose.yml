@@ -1,0 +1,41 @@
+services:
+  redis:
+    image: redis:7
+    container_name: t2-redis
+    ports:
+      - "6379:6379"
+    # Decisión de persistencia EXPLÍCITA (ejemplo: AOF + everysec).
+    # Cámbiala si eliges RDB o ninguna, y justifícalo en el README.
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save ""
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  hbase:
+    build:
+      context: ./docker/hbase
+    container_name: t2-hbase
+    ports:
+      - "9090:9090"     
+      - "16010:16010"   
+    volumes:
+      - hbase_data:/data
+    stop_grace_period: 60s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:16010/master-status >/dev/null && bash -c '</dev/tcp/127.0.0.1/9090'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+volumes:
+  redis_data:
+  hbase_data:

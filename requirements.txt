@@ -1,0 +1,4 @@
+redis>=5.0
+happybase>=1.2
+pandas>=2.0
+numpy
